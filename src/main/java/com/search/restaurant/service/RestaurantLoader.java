@@ -25,18 +25,23 @@ public class RestaurantLoader {
         this.cuisines = cuisines;
     }
 
-    public static List<Restaurant> loadRestaurants() {
+    public static List<Restaurant> loadRestaurants(List<Cuisine> cuisines) {
         List<Restaurant> records = new ArrayList<>();
         try (CSVReader csvReader = new CSVReader(new FileReader(new File(getResourceURL("restaurants.csv"))))) {
             List<String[]> allValues = csvReader.readAll();
             allValues.remove(0);
             for (String[] values : allValues) {
+                int cuisineId = Integer.parseInt(values[4]);
                 records.add(Restaurant.builder()
                         .name(values[0])
                         .rating(Integer.parseInt(values[1]))
                         .distance(Integer.parseInt(values[2]))
                         .price(Integer.parseInt(values[3]))
-                        .cuisineId(Integer.parseInt(values[4]))
+                        .cuisine(cuisines.stream()
+                                .filter(x -> x.getId() == cuisineId)
+                                .map(Cuisine::getName).findFirst()
+                                .orElse("other")) //only 19 so no need to map;
+                        .cuisineId(cuisineId)
                         .build());
             }
         } catch (Exception e) {
