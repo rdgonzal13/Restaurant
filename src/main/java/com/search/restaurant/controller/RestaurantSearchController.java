@@ -30,7 +30,7 @@ public class RestaurantSearchController {
                                                                   @RequestParam(value = "cuisine" , required = false) String cuisine,
                                                                   @RequestParam(value = "price", required = false) Integer price){
 
-        Set<Restaurant> restaurants = searchService.findRestaurants(name, rating);
+        Set<Restaurant> restaurants = searchService.findRestaurants(name, distance, rating, price, cuisine);
         return ResponseEntity.of(Optional.of(restaurants));
     }
 
