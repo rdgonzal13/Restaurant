@@ -32,32 +32,31 @@ public class RestaurantSearchService {
 
     public Set<Restaurant> findRestaurants(String name,Integer distance, Integer rating, Integer price, String cuisine) throws IllegalArgumentException{
             validateInput(rating , price, distance);
-            var outputs = new ArrayList<Set<Restaurant>>();
+            var searchResults = new ArrayList<Set<Restaurant>>();
 
             if(distance != null){
-                outputs.add(findByDistance(distance));
+                searchResults.add(findByDistance(distance));
             }
             if (rating != null){
-                outputs.add(ratingMap.get(rating));
+                searchResults.add(ratingMap.get(rating));
             }
 
             if(price != null){
-                outputs.add(findByPrice(price));
+                searchResults.add(findByPrice(price));
             }
 
             if(StringUtils.isNotEmpty(cuisine)){
-                outputs.add(findByCuisine(cuisine));
+                searchResults.add(findByCuisine(cuisine));
             }
 
             if(StringUtils.isNotEmpty(name)){
-                outputs.add(findByName(name));
+                searchResults.add(findByName(name));
             }
 
-
-        if (outputs.isEmpty()) {
+        if (searchResults.isEmpty()) {
             return Collections.emptySet();
         }
-        Iterator<Set<Restaurant>> it = outputs.iterator();
+        Iterator<Set<Restaurant>> it = searchResults.iterator();
         Set<Restaurant> response = new HashSet<>(it.next());
         while (it.hasNext()) {
             response.retainAll(it.next());
