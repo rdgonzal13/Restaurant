@@ -4,15 +4,7 @@ import com.search.restaurant.model.Cuisine;
 import com.search.restaurant.model.Restaurant;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class RestaurantSearchService {
@@ -61,15 +53,17 @@ public class RestaurantSearchService {
                 outputs.add(findByName(name));
             }
 
-            //TODO: fix set union here;
-        return outputs.stream().reduce(new HashSet<Restaurant>(), (x , y) -> {
-                if(x.isEmpty()){
-                    return y;
-                }else{
-                    x.retainAll(y);
-                    return x;
-                }
-            });
+
+        if (outputs.isEmpty()) {
+            return Collections.emptySet();
+        }
+        Iterator<Set<Restaurant>> it = outputs.iterator();
+        Set<Restaurant> response = new HashSet<>(it.next());
+        while (it.hasNext()) {
+            response.retainAll(it.next());
+        }
+        return response;
+
     }
 
     private Set<Restaurant> findByName(String name){
@@ -103,7 +97,6 @@ public class RestaurantSearchService {
                     matching.addAll(cuisineMap.get(cuisine.getName()));
                 });
         return matching;
-
     }
 
 
@@ -159,15 +152,13 @@ public class RestaurantSearchService {
         if(rating != null && (rating <= 0 || rating > 5)){
             throw new IllegalArgumentException("Rating is outside of range");
         }
-        if(distance < 0){
+        if(distance != null && distance < 0){
             throw new IllegalArgumentException("Distance can't be negative");
         }
-        if(price < 0){
+        if(price != null && price < 0){
             throw new IllegalArgumentException("price can't be negative");
         }
     }
-
-
 
 
 }
