@@ -30,8 +30,14 @@ public class RestaurantSearchController {
                                                                   @RequestParam(value = "cuisine" , required = false) String cuisine,
                                                                   @RequestParam(value = "price", required = false) Integer price){
 
-        Set<Restaurant> restaurants = searchService.findRestaurants(name, distance, rating, price, cuisine);
-        return ResponseEntity.of(Optional.of(restaurants));
+        try {
+            Set<Restaurant> restaurants = searchService.findRestaurants(name, distance, rating, price, cuisine);
+            return ResponseEntity.of(Optional.of(restaurants));
+        }catch (IllegalArgumentException e){
+            //TODO: Add message here;
+            return ResponseEntity.badRequest().build();
+        }
+
     }
 
 
