@@ -36,7 +36,6 @@ public class RestaurantSearchService {
 
     }
 
-
     public Set<Restaurant> findRestaurants(String name,Integer distance, Integer rating, Integer price, String cuisine) throws IllegalArgumentException{
             validateInput(rating , price, distance);
             var searchResults = new ArrayList<Set<Restaurant>>();
@@ -64,7 +63,7 @@ public class RestaurantSearchService {
             return Collections.emptySet();
         }
         Iterator<Set<Restaurant>> it = searchResults.iterator();
-        Set<Restaurant> response = new HashSet<>(it.next());
+        Set<Restaurant> response = it.next();
         while (it.hasNext()) {
             response.retainAll(it.next());
         }
