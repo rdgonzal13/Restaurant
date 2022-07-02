@@ -1,10 +1,17 @@
 package com.search.restaurant.service;
 
-import com.search.restaurant.model.Cuisine;
 import com.search.restaurant.model.Restaurant;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class RestaurantSearchService {
@@ -38,7 +45,7 @@ public class RestaurantSearchService {
                 searchResults.add(findByDistance(distance));
             }
             if (rating != null){
-                searchResults.add(ratingMap.get(rating));
+                searchResults.add(findByRating(rating));
             }
 
             if(price != null){
@@ -77,6 +84,10 @@ public class RestaurantSearchService {
                 .stream()
                 .filter(restaurant -> restaurant.getDistance() <= distance)
                 .collect(Collectors.toSet());
+    }
+
+    private Set<Restaurant> findByRating(Integer rating){
+        return new HashSet<>(ratingMap.get(rating));
     }
 
     private Set<Restaurant> findByPrice(Integer price){
