@@ -39,8 +39,7 @@ public class RestaurantSearchService {
 
 
     public Set<Restaurant> findRestaurants(String name,Integer distance, Integer rating, Integer price, String cuisine) throws IllegalArgumentException{
-            validateInput(rating);
-
+            validateInput(rating , price, distance);
             var outputs = new ArrayList<Set<Restaurant>>();
 
             if(distance != null){
@@ -62,7 +61,7 @@ public class RestaurantSearchService {
                 outputs.add(findByName(name));
             }
 
-            //return nothing if no match.
+            //TODO: fix set union here;
         return outputs.stream().reduce(new HashSet<Restaurant>(), (x , y) -> {
                 if(x.isEmpty()){
                     return y;
@@ -108,22 +107,15 @@ public class RestaurantSearchService {
     }
 
 
-    private void validateInput(Integer rating){
-        if(rating != null && (rating <= 0 || rating > 5)){
-            throw new IllegalArgumentException("Rating is outside of range");
-        }
-    }
-
-
     private List<Restaurant> sortedByDistance(){
         List<Restaurant> sorted = restaurantLoader.getRestaurants();
-        Collections.sort(sorted,Comparator.comparingInt(Restaurant::getDistance));
+        sorted.sort(Comparator.comparingInt(Restaurant::getDistance));
         return sorted;
     }
 
     private List<Restaurant> sortedByPrice(){
         List<Restaurant> sorted = restaurantLoader.getRestaurants();
-        Collections.sort(sorted,Comparator.comparingInt(Restaurant::getPrice));
+        sorted.sort(Comparator.comparingInt(Restaurant::getPrice));
         return sorted;
     }
 
@@ -146,6 +138,7 @@ public class RestaurantSearchService {
         return nRatingMap;
     }
 
+    //Index By cuisine when bean is created for faster startup.
     private Map<String, Set<Restaurant>> indexByCuisine(){
         Map<String, Set<Restaurant>> cuisineSetMap = new HashMap<>();
         restaurantLoader.getRestaurants().forEach(restaurant -> {
@@ -161,7 +154,18 @@ public class RestaurantSearchService {
     }
 
 
-
+    //TODO: validate the rest of input
+    private void validateInput(Integer rating, Integer price , Integer distance){
+        if(rating != null && (rating <= 0 || rating > 5)){
+            throw new IllegalArgumentException("Rating is outside of range");
+        }
+        if(distance < 0){
+            throw new IllegalArgumentException("Distance can't be negative");
+        }
+        if(price < 0){
+            throw new IllegalArgumentException("price can't be negative");
+        }
+    }
 
 
 
