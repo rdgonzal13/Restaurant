@@ -12,6 +12,7 @@ public class Restaurant {
     private int rating;
     private double string;
     private String cuisine;
+    private int cuisineId;
     private int distance;
     private int price;
 

@@ -17,6 +17,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation "org.springdoc:springdoc-openapi-ui:1.6.8"
 	compileOnly 'org.projectlombok:lombok'
+	compileOnly 'com.opencsv:opencsv:4.1'
 	annotationProcessor 'org.projectlombok:lombok'
 }
 
