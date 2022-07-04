@@ -15,6 +15,10 @@ public class RestaurantSearchService {
 
     private final List<Restaurant> sortByDistance;
 
+    private final List<Integer> sortByDistanceValues;
+
+    private final List<Integer> sortByPriceValues;
+
     private final List<Restaurant> sortByPrice;
 
     private final Map<String, Set<Restaurant>> cuisineMap;
@@ -23,7 +27,9 @@ public class RestaurantSearchService {
         this.restaurantLoader = restaurantLoader;
         this.ratingMap = indexByRating();
         this.sortByDistance = sortedByDistance();
+        this.sortByDistanceValues = this.sortByDistance.stream().map(Restaurant::getDistance).collect(Collectors.toList());
         this.sortByPrice = sortedByPrice();
+        this.sortByPriceValues = this.sortByPrice.stream().map(Restaurant::getPrice).collect(Collectors.toList());
         this.cuisineMap = indexByCuisine();
 
     }
@@ -104,11 +110,9 @@ public class RestaurantSearchService {
                 .collect(Collectors.toSet());
     }
 
-    private Set<Restaurant> findByDistance(Integer distance){
-        return sortByDistance
-                .stream()
-                .filter(restaurant -> restaurant.getDistance() <= distance)
-                .collect(Collectors.toSet());
+
+    private Set<Restaurant> findByDistance(Integer distance) {
+        return new HashSet<>(this.sortByDistance.subList(0, binarySearch(this.sortByDistanceValues , distance)));
     }
 
     private Set<Restaurant> findByRating(Integer rating){
@@ -116,10 +120,7 @@ public class RestaurantSearchService {
     }
 
     private Set<Restaurant> findByPrice(Integer price){
-        return sortByPrice
-                .stream()
-                .filter(restaurant -> restaurant.getPrice() <= price)
-                .collect(Collectors.toSet());
+        return new HashSet<>(this.sortByPrice.subList(0, binarySearch(this.sortByPriceValues , price)));
 
     }
 
@@ -134,15 +135,29 @@ public class RestaurantSearchService {
         return matching;
     }
 
+    private int binarySearch(List<Integer> searchValues, int value){
+        var index = Collections.binarySearch(searchValues, value);
+
+        if (index >= 0) {
+            index++;
+            while (index < searchValues.size() && searchValues.get(index).equals(value)) {
+                index++;
+            }
+        } else {
+            //Binary search returns -(insertion point) - 1 if the element is not in the array
+            index = Math.abs(index) - 1;
+        }
+        return index;
+    }
 
     private List<Restaurant> sortedByDistance(){
-        List<Restaurant> sorted = restaurantLoader.getRestaurants();
+        List<Restaurant> sorted = new ArrayList<>(restaurantLoader.getRestaurants());
         sorted.sort(Comparator.comparingInt(Restaurant::getDistance));
         return sorted;
     }
 
     private List<Restaurant> sortedByPrice(){
-        List<Restaurant> sorted = restaurantLoader.getRestaurants();
+        List<Restaurant> sorted = new ArrayList<>(restaurantLoader.getRestaurants());
         sorted.sort(Comparator.comparingInt(Restaurant::getPrice));
         return sorted;
     }
