@@ -26,7 +26,7 @@ public class RestaurantSearchServiceTest {
 
 
     @BeforeAll
-    public void setup(){
+    public void setup() {
         this.cuisines = createTestCuisineData();
         this.restaurants = createTestRestaurantData(this.cuisines);
 
@@ -35,74 +35,130 @@ public class RestaurantSearchServiceTest {
 
     }
 
+    @Test
+    public void testSearchWithAllNull() {
+        Set<Restaurant> test = searchService.findRestaurants(null, null, null, null, null);
+        Assertions.assertTrue(test.isEmpty());
+    }
 
     @Test
-    public void testSearchWithNameOnly(){
-
-        //Null value
-        Set<Restaurant> test = searchService.findRestaurants(null , null , null, null, null);
-        Assertions.assertTrue(test.isEmpty());
+    public void testSearchWithNameOnly() {
 
         //Name not found
-        test = searchService.findRestaurants("Not found", null , null, null, null);
+        Set<Restaurant> test = searchService.findRestaurants("Not found", null, null, null, null);
         Assertions.assertTrue(test.isEmpty());
 
         //Test with 2 matching
-        test = searchService.findRestaurants("Taste", null , null, null, null);
+        test = searchService.findRestaurants("Taste", null, null, null, null);
         Assertions.assertEquals(2, test.size());
         Assertions.assertTrue(test.contains(restaurants.get(0)));
         Assertions.assertTrue(test.contains(restaurants.get(1)));
 
 
         //Test with 1 matching
-        test = searchService.findRestaurants(restaurants.get(2).getName(), null , null, null, null);
+        test = searchService.findRestaurants(restaurants.get(2).getName(), null, null, null, null);
         Assertions.assertEquals(1, test.size());
         Assertions.assertTrue(test.contains(restaurants.get(2)));
 
     }
 
-    //@Test
-    public void testSearchWithDistanceOnly(){
+    @Test
+    public void testSearchWithDistanceOnly() {
+
+        //Test no matches found
+        Set<Restaurant> test = searchService.findRestaurants(null, 1, null, null, null);
+        Assertions.assertTrue(test.isEmpty());
+
+        //Test one matches found (only one distance less than value)
+        test = searchService.findRestaurants(null, 5, null, null, null);
+        Assertions.assertEquals(1, test.size());
+        ;
+
+        //Test two matches found (two distances less than value)
+        test = searchService.findRestaurants(null, 8, null, null, null);
+        Assertions.assertEquals(2, test.size());
+
+        //Test three matches found (3 distances less than value)
+        test = searchService.findRestaurants(null, 10, null, null, null);
+        Assertions.assertEquals(3, test.size());
+
+
+
+    }
+
+    @Test
+    public void testSearchCuisineOnly() {
+        Set<Restaurant> test = searchService.findRestaurants(null, null, null, null, cuisines.get(1).getName() );
+        Assertions.assertEquals(1, test.size());
+
+        //Test two matches found (two prices less than value)
+        test = searchService.findRestaurants(null, null, null, null, cuisines.get(0).getName());
+        Assertions.assertEquals(2, test.size());
+
+    }
+
+    @Test
+    public void testSearchRatingOnly() {
+
+        //Test one matches found (only one price less than value)
+        Set<Restaurant> test = searchService.findRestaurants(null, null, 5, null, null);
+        Assertions.assertEquals(1, test.size());
+
+        //Test two matches found (two prices less than value)
+        test = searchService.findRestaurants(null, null, 4, null, null);
+        Assertions.assertEquals(2, test.size());
+
+        //Test three matches found (3 prices less than value)
+        test = searchService.findRestaurants(null, null, 3, null, null);
+        Assertions.assertEquals(3, test.size());
+
+    }
+
+    @Test
+    public void testSearchPriceOnly() {
+
+        //Test no matches found
+        Set<Restaurant> test = searchService.findRestaurants(null, null, null, 1, null);
+        Assertions.assertTrue(test.isEmpty());
+
+        //Test one matches found (only one price less than value)
+        test = searchService.findRestaurants(null, null, null, 3, null);
+        Assertions.assertEquals(1, test.size());
+        ;
+
+        //Test two matches found (two prices less than value)
+        test = searchService.findRestaurants(null, null, null, 5, null);
+        Assertions.assertEquals(2, test.size());
+
+        //Test three matches found (3 prices less than value)
+        test = searchService.findRestaurants(null, null, null, 8, null);
+        Assertions.assertEquals(3, test.size());
+
 
     }
 
     //@Test
-    public void testSearchCuisineOnly(){
-
-    }
-
-    //@Test
-    public void testSearchRatingOnly(){
-
-    }
-
-    //@Test
-    public void testSearchPriceOnly(){
-
-    }
-
-    //@Test
-    public void testSearchWithNameAndDistance(){
+    public void testSearchWithNameAndDistance() {
 
     }
 
 
     //@Test
-    public void testSearchWithNameAndCuisineAndDistance(){
+    public void testSearchWithNameAndCuisineAndDistance() {
 
     }
 
     //@Test
-    public void testSearchWithNameAndCuisineAndDistanceAndPrice(){
+    public void testSearchWithNameAndCuisineAndDistanceAndPrice() {
 
     }
 
     //@Test
-    public void testSearchWithNameAndCuisineAndDistanceAndPriceAndRating(){
+    public void testSearchWithNameAndCuisineAndDistanceAndPriceAndRating() {
 
     }
 
-    private List<Cuisine> createTestCuisineData(){
+    private List<Cuisine> createTestCuisineData() {
         List<Cuisine> cuisines = new ArrayList<>();
         cuisines.add(Cuisine.builder()
                 .name("Spanish")
@@ -115,7 +171,7 @@ public class RestaurantSearchServiceTest {
         return cuisines;
     }
 
-    private List<Restaurant> createTestRestaurantData(List<Cuisine> cuisines){
+    private List<Restaurant> createTestRestaurantData(List<Cuisine> cuisines) {
         List<Restaurant> restaurants = new ArrayList<>();
 
         restaurants.add(Restaurant.builder()
@@ -145,10 +201,6 @@ public class RestaurantSearchServiceTest {
 
         return restaurants;
     }
-
-
-
-
 
 
 }
