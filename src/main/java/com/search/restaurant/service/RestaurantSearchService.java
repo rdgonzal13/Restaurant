@@ -3,15 +3,7 @@ package com.search.restaurant.service;
 import com.search.restaurant.model.Restaurant;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class RestaurantSearchService {
@@ -36,7 +28,7 @@ public class RestaurantSearchService {
 
     }
 
-    public Set<Restaurant> findRestaurants(String name,Integer distance, Integer rating, Integer price, String cuisine) throws IllegalArgumentException{
+    public List<Restaurant> findRestaurants(String name,Integer distance, Integer rating, Integer price, String cuisine) throws IllegalArgumentException{
             validateInput(rating , price, distance);
             var searchResults = new ArrayList<Set<Restaurant>>();
 
@@ -60,16 +52,42 @@ public class RestaurantSearchService {
             }
 
         if (searchResults.isEmpty()) {
-            return Collections.emptySet();
+            return Collections.emptyList();
         }
+
         Iterator<Set<Restaurant>> it = searchResults.iterator();
         Set<Restaurant> response = it.next();
         while (it.hasNext()) {
             response.retainAll(it.next());
         }
-        return response;
 
+        return getBestResults(new ArrayList<>(response));
     }
+
+    private List<Restaurant> getBestResults(List<Restaurant> restaurants){
+        //Sorting By worst result at the top of the priority queue
+        PriorityQueue<Restaurant> results = new PriorityQueue<>(Comparator
+                .comparing(Restaurant::getDistance).reversed()
+                .thenComparing(Restaurant::getRating)
+                .thenComparing(Restaurant::getPrice).reversed());
+        //Add the first six to the queue
+        for(int n = 0; n < 6 && n < restaurants.size(); n++){
+            results.add(restaurants.get(n));
+        }
+
+        int n = 6;
+        while(n < restaurants.size()){
+            results.poll();
+            results.add(restaurants.get(n));
+        }
+
+        if(results.size() == 6){
+            results.poll();
+        }
+       return new ArrayList<>(results);
+    }
+
+
 
     private Set<Restaurant> findByName(String name){
        return this.restaurantLoader.getRestaurants().stream()

@@ -1,5 +1,6 @@
 package com.search.restaurant;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.search.restaurant.model.Cuisine;
 import com.search.restaurant.model.Restaurant;
 import com.search.restaurant.service.RestaurantLoader;
@@ -37,7 +38,7 @@ public class RestaurantSearchServiceTest {
 
     @Test
     public void testSearchWithAllNull() {
-        Set<Restaurant> test = searchService.findRestaurants(null, null, null, null, null);
+        List<Restaurant> test = searchService.findRestaurants(null, null, null, null, null);
         Assertions.assertTrue(test.isEmpty());
     }
 
@@ -45,20 +46,19 @@ public class RestaurantSearchServiceTest {
     public void testSearchWithNameOnly() {
 
         //Name not found
-        Set<Restaurant> test = searchService.findRestaurants("Not found", null, null, null, null);
+        List<Restaurant> test = searchService.findRestaurants("Not found", null, null, null, null);
         Assertions.assertTrue(test.isEmpty());
 
         //Test with 2 matching
         test = searchService.findRestaurants("Taste", null, null, null, null);
         Assertions.assertEquals(2, test.size());
-        Assertions.assertTrue(test.contains(restaurants.get(0)));
-        Assertions.assertTrue(test.contains(restaurants.get(1)));
+        Assertions.assertTrue(test.get(0).getDistance() <= test.get(1).getDistance());
+
 
 
         //Test with 1 matching
         test = searchService.findRestaurants(restaurants.get(2).getName(), null, null, null, null);
         Assertions.assertEquals(1, test.size());
-        Assertions.assertTrue(test.contains(restaurants.get(2)));
 
     }
 
@@ -66,7 +66,7 @@ public class RestaurantSearchServiceTest {
     public void testSearchWithDistanceOnly() {
 
         //Test no matches found
-        Set<Restaurant> test = searchService.findRestaurants(null, 1, null, null, null);
+        List<Restaurant> test = searchService.findRestaurants(null, 1, null, null, null);
         Assertions.assertTrue(test.isEmpty());
 
         //Test one matches found (only one distance less than value)
@@ -88,7 +88,7 @@ public class RestaurantSearchServiceTest {
 
     @Test
     public void testSearchCuisineOnly() {
-        Set<Restaurant> test = searchService.findRestaurants(null, null, null, null, cuisines.get(1).getName() );
+        List<Restaurant> test = searchService.findRestaurants(null, null, null, null, cuisines.get(1).getName() );
         Assertions.assertEquals(1, test.size());
 
         //Test two matches found (two prices less than value)
@@ -101,7 +101,7 @@ public class RestaurantSearchServiceTest {
     public void testSearchRatingOnly() {
 
         //Test one matches found (only one price less than value)
-        Set<Restaurant> test = searchService.findRestaurants(null, null, 5, null, null);
+        List<Restaurant> test = searchService.findRestaurants(null, null, 5, null, null);
         Assertions.assertEquals(1, test.size());
 
         //Test two matches found (two prices less than value)
@@ -118,13 +118,13 @@ public class RestaurantSearchServiceTest {
     public void testSearchPriceOnly() {
 
         //Test no matches found
-        Set<Restaurant> test = searchService.findRestaurants(null, null, null, 1, null);
+        List<Restaurant> test = searchService.findRestaurants(null, null, null, 1, null);
         Assertions.assertTrue(test.isEmpty());
 
         //Test one matches found (only one price less than value)
         test = searchService.findRestaurants(null, null, null, 3, null);
         Assertions.assertEquals(1, test.size());
-        ;
+
 
         //Test two matches found (two prices less than value)
         test = searchService.findRestaurants(null, null, null, 5, null);
@@ -139,23 +139,28 @@ public class RestaurantSearchServiceTest {
 
     //@Test
     public void testSearchWithNameAndDistance() {
-
+        //TODO: implement
     }
 
 
     //@Test
     public void testSearchWithNameAndCuisineAndDistance() {
-
+        //TODO: implement
     }
 
     //@Test
     public void testSearchWithNameAndCuisineAndDistanceAndPrice() {
-
+        //TODO: implement
     }
 
     //@Test
     public void testSearchWithNameAndCuisineAndDistanceAndPriceAndRating() {
+        //TODO: implement
+    }
 
+    //@Test
+    public void testOnlyReturns5best(){
+        //TODO: implemenent
     }
 
     private List<Cuisine> createTestCuisineData() {

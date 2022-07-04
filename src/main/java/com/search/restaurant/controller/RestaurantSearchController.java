@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -21,14 +22,14 @@ public class RestaurantSearchController {
 
 
     @GetMapping("/restaurants")
-    public ResponseEntity<Set<Restaurant>> searchLocalRestaurants(@RequestParam(value = "name", required = false) String name,
-                                                                  @RequestParam(value = "distance" , required = false) Integer distance,
-                                                                  @RequestParam(value = "customer_rating" , required = false) Integer rating,
-                                                                  @RequestParam(value = "cuisine" , required = false) String cuisine,
-                                                                  @RequestParam(value = "price", required = false) Integer price){
+    public ResponseEntity<List<Restaurant>> searchLocalRestaurants(@RequestParam(value = "name", required = false) String name,
+                                                                   @RequestParam(value = "distance" , required = false) Integer distance,
+                                                                   @RequestParam(value = "customer_rating" , required = false) Integer rating,
+                                                                   @RequestParam(value = "cuisine" , required = false) String cuisine,
+                                                                   @RequestParam(value = "price", required = false) Integer price){
 
         try {
-            Set<Restaurant> restaurants = searchService.findRestaurants(name, distance, rating, price, cuisine);
+            List<Restaurant> restaurants = searchService.findRestaurants(name, distance, rating, price, cuisine);
             return ResponseEntity.of(Optional.of(restaurants));
         }catch (IllegalArgumentException e){
             //TODO: Add message here;
