@@ -33,7 +33,7 @@ public class RestaurantLoader {
             for (String[] values : allValues) {
                 int cuisineId = Integer.parseInt(values[4]);
                 records.add(Restaurant.builder()
-                        .name(values[0])
+                        .name(values[0].toLowerCase())
                         .rating(Integer.parseInt(values[1]))
                         .distance(Integer.parseInt(values[2]))
                         .price(Integer.parseInt(values[3]))
@@ -60,7 +60,7 @@ public class RestaurantLoader {
             for (String[] values : allValues) {
                 cuisines.add(Cuisine.builder()
                         .id(Integer.parseInt(values[0]))
-                        .name(values[1]).build());
+                        .name(values[1].toLowerCase()).build());
             }
         } catch (Exception e) {
             e.printStackTrace();

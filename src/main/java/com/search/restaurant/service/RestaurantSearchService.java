@@ -103,9 +103,10 @@ public class RestaurantSearchService {
 
 
     private Set<Restaurant> findByName(String name){
+        String lname = name.toLowerCase();
        return this.restaurantLoader.getRestaurants().stream()
                 .filter(restaurant -> restaurant.getName()
-                        .contains(name))
+                        .contains(lname))
                 .collect(Collectors.toSet());
     }
 
@@ -125,8 +126,9 @@ public class RestaurantSearchService {
 
     private Set<Restaurant> findByCuisine(String cuisineName){
         Set<Restaurant> matching = new HashSet<>();
+        String lCuisineName = cuisineName.toLowerCase();
         restaurantLoader.getCuisines().stream()
-                .filter(cuisine -> cuisine.getName().contains(cuisineName)).
+                .filter(cuisine -> cuisine.getName().contains(lCuisineName)).
                 collect(Collectors.toList())
                 .forEach(cuisine -> {
                     matching.addAll(cuisineMap.get(cuisine.getName()));

@@ -1,0 +1,1 @@
+//Search is case-insensitive
