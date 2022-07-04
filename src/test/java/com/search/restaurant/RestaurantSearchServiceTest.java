@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -32,7 +31,6 @@ public class RestaurantSearchServiceTest {
         List<Restaurant> test = searchService.findRestaurants(null, null, null, null, null);
         Assertions.assertTrue(test.isEmpty());
     }
-
 
 
     @Test
@@ -103,7 +101,6 @@ public class RestaurantSearchServiceTest {
 
      @Test
     public void testSearchWithNameOnly() {
-        //Name not found
          this.loader = new RestaurantLoader(RestaurantLoader.loadRestaurants(cuisines, "distance_restaurants.csv"), cuisines);
          this.searchService = new RestaurantSearchService(loader);
 
@@ -124,55 +121,26 @@ public class RestaurantSearchServiceTest {
     }
 
 
-      /*  @Test
+    @Test
     public void testSearchCuisineOnly() {
-        List<Restaurant> test = searchService.findRestaurants(null, null, null, null, cuisines.get(1).getName() );
+        this.loader = new RestaurantLoader(RestaurantLoader.loadRestaurants(cuisines, "distance_restaurants.csv"), cuisines);
+        this.searchService = new RestaurantSearchService(loader);
+
+        //Test no matches found
+        List<Restaurant> test = searchService.findRestaurants(null, null, null, null, "no match");
+        Assertions.assertTrue(test.isEmpty());
+
+        test = searchService.findRestaurants(null, null, null, null, "Kor");
         Assertions.assertEquals(1, test.size());
 
-        //Test two matches found (two prices less than value)
-        test = searchService.findRestaurants(null, null, null, null, cuisines.get(0).getName());
-        Assertions.assertEquals(2, test.size());
+        //Test that if all match , sorted by distance first
+        test = searchService.findRestaurants(null, null, null, null, "Spa");
+        Assertions.assertEquals(3, test.size());
+        Assertions.assertTrue(test.get(0).getDistance() <= test.get(1).getDistance());
+        Assertions.assertTrue(test.get(1).getDistance() <= test.get(2).getDistance());
 
-    }*/
-
-    //@Test
-    public void testSearchWithNameAndDistance() {
-        //TODO: implement
     }
 
-
-    //@Test
-    public void testSearchWithNameAndCuisineAndDistance() {
-        //TODO: implement
-    }
-
-    //@Test
-    public void testSearchWithNameAndCuisineAndDistanceAndPrice() {
-        //TODO: implement
-    }
-
-    //@Test
-    public void testSearchWithNameAndCuisineAndDistanceAndPriceAndRating() {
-        //TODO: implement
-    }
-
-    //@Test
-    public void testOnlyReturns5best(){
-        //TODO: implemenent
-    }
-
-    private List<Cuisine> createTestCuisineData() {
-        List<Cuisine> cuisines = new ArrayList<>();
-        cuisines.add(Cuisine.builder()
-                .name("Spanish")
-                .id(1)
-                .build());
-        cuisines.add(Cuisine.builder()
-                .name("Italian")
-                .id(2)
-                .build());
-        return cuisines;
-    }
 
 
 
