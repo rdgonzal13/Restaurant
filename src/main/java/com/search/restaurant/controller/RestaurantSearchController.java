@@ -1,9 +1,7 @@
 package com.search.restaurant.controller;
 
 import com.search.restaurant.model.Restaurant;
-import com.search.restaurant.model.Restaurants;
 import com.search.restaurant.service.RestaurantSearchService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 public class RestaurantSearchController {
