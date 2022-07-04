@@ -32,7 +32,6 @@ public class RestaurantSearchController {
             List<Restaurant> restaurants = searchService.findRestaurants(name, distance, rating, price, cuisine);
             return ResponseEntity.of(Optional.of(restaurants));
         }catch (IllegalArgumentException e){
-            //TODO: Add message here;
             return ResponseEntity.badRequest().build();
         }
 

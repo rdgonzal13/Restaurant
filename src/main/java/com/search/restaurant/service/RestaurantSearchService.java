@@ -197,7 +197,6 @@ public class RestaurantSearchService {
     }
 
 
-    //TODO: validate the rest of input
     private void validateInput(Integer rating, Integer price , Integer distance){
         if(rating != null && (rating <= 0 || rating > 5)){
             throw new IllegalArgumentException("Rating is outside of range");
