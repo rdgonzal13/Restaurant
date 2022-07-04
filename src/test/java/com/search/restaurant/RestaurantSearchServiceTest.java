@@ -101,21 +101,27 @@ public class RestaurantSearchServiceTest {
 
     }
 
-    //    @Test
-//    public void testSearchWithNameOnly() {
-//        //Name not found
-//        List<Restaurant> test = searchService.findRestaurants("Not found", null, null, null, null);
-//        Assertions.assertTrue(test.isEmpty());
-//
-//        //Test with 2 matching
-//        test = searchService.findRestaurants("Taste", null, null, null, null);
-//        Assertions.assertEquals(2, test.size());
-//        Assertions.assertTrue(test.get(0).getDistance() <= test.get(1).getDistance());
-//
-//        //Test with 1 matching
-//        test = searchService.findRestaurants(restaurants.get(2).getName(), null, null, null, null);
-//        Assertions.assertEquals(1, test.size());
-//    }
+     @Test
+    public void testSearchWithNameOnly() {
+        //Name not found
+         this.loader = new RestaurantLoader(RestaurantLoader.loadRestaurants(cuisines, "distance_restaurants.csv"), cuisines);
+         this.searchService = new RestaurantSearchService(loader);
+
+         //Test no matches found
+         List<Restaurant> test = searchService.findRestaurants("Not found", null, null, null, null);
+         Assertions.assertTrue(test.isEmpty());
+
+         test = searchService.findRestaurants("Deliciousgenix", null, null, null, null);
+         Assertions.assertEquals(1, test.size());
+
+         //Test that if all match , sorted by distance first
+         test = searchService.findRestaurants("Del", null, null, null, null);
+         Assertions.assertEquals(5, test.size());
+         Assertions.assertTrue(test.get(0).getDistance() <= test.get(1).getDistance());
+         Assertions.assertTrue(test.get(1).getDistance() <= test.get(2).getDistance());
+         Assertions.assertTrue(test.get(2).getDistance() <= test.get(3).getDistance());
+         Assertions.assertTrue(test.get(3).getDistance() <= test.get(4).getDistance());
+    }
 
 
       /*  @Test
