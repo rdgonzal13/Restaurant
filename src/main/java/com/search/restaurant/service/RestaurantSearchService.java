@@ -36,6 +36,7 @@ public class RestaurantSearchService {
             validateInput(rating , price, distance);
             var searchResults = new ArrayList<Set<Restaurant>>();
 
+            //search functions could be done concurrently to improve performance
             if(distance != null){
                 searchResults.add(findByDistance(distance));
             }
