@@ -56,6 +56,7 @@ public class RestaurantSearchService {
                 searchResults.add(findByName(name));
             }
 
+        //If no criteria are entered then return an empty list
         if (searchResults.isEmpty()) {
             return Collections.emptyList();
         }
@@ -69,7 +70,7 @@ public class RestaurantSearchService {
         return getBestResults(new ArrayList<>(response));
     }
 
-    //Using priority queue to create min heap of size 6 --> O(n) to find top five resultss
+    //Using priority queue to create min heap of size 6 --> O(n) to find top five results
     private List<Restaurant> getBestResults(List<Restaurant> restaurants){
         //Sorting By worst result at the top of the priority queue
         PriorityQueue<Restaurant> results = new PriorityQueue<>(Comparator
@@ -164,7 +165,8 @@ public class RestaurantSearchService {
         return sorted;
     }
 
-    //Index restaurants by Rating for faster lookup Do when bean is constructed not during search
+    //Index restaurants by Rating for faster lookup
+    //This is done when bean is created so burden is not on search
     private Map<Integer, Set<Restaurant>> indexByRating (){
         Map<Integer, Set<Restaurant>> nRatingMap = new HashMap<>();
         restaurantLoader.getRestaurants().forEach(restaurant -> {
@@ -183,7 +185,8 @@ public class RestaurantSearchService {
         return nRatingMap;
     }
 
-    //Index By cuisine when bean is created for faster startup.
+    //Index By cuisine when bean is created for faster lookup later
+    //This is done when bean is created so burden is not on search
     private Map<String, Set<Restaurant>> indexByCuisine(){
         Map<String, Set<Restaurant>> cuisineSetMap = new HashMap<>();
         restaurantLoader.getRestaurants().forEach(restaurant -> {
