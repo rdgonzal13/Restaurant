@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 public class RestaurantSearchService {
 
-
     private final RestaurantLoader restaurantLoader;
 
     private final Map<Integer , Set<Restaurant>> ratingMap;
@@ -31,7 +30,6 @@ public class RestaurantSearchService {
         this.sortByPrice = sortedByPrice();
         this.sortByPriceValues = this.sortByPrice.stream().map(Restaurant::getPrice).collect(Collectors.toList());
         this.cuisineMap = indexByCuisine();
-
     }
 
     public List<Restaurant> findRestaurants(String name,Integer distance, Integer rating, Integer price, String cuisine) throws IllegalArgumentException{
@@ -70,7 +68,7 @@ public class RestaurantSearchService {
         return getBestResults(new ArrayList<>(response));
     }
 
-    //Using priority queue to create min heap of size 6 --> O(n) to find top five
+    //Using priority queue to create min heap of size 6 --> O(n) to find top five resultss
     private List<Restaurant> getBestResults(List<Restaurant> restaurants){
         //Sorting By worst result at the top of the priority queue
         PriorityQueue<Restaurant> results = new PriorityQueue<>(Comparator
@@ -84,12 +82,13 @@ public class RestaurantSearchService {
 
         int n = 6;
         while(n < restaurants.size()){
+            //Pop off the worst restaurant match
             results.poll();
-            results.add(restaurants.get(n));
+            results.add(restaurants.get(n)); //add the next, the queue will re-sort in log(6)
             n++;
         }
 
-        if(results.size() == 6){
+        if(results.size() == 6){ //only want the top 5
             results.poll();
         }
 
