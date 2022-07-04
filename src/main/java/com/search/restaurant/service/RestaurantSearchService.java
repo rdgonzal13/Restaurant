@@ -64,13 +64,14 @@ public class RestaurantSearchService {
         return getBestResults(new ArrayList<>(response));
     }
 
+    //Using priority queue to create min heap of size 6 --> O(n) to find top five
     private List<Restaurant> getBestResults(List<Restaurant> restaurants){
         //Sorting By worst result at the top of the priority queue
         PriorityQueue<Restaurant> results = new PriorityQueue<>(Comparator
-                .comparing(Restaurant::getDistance).reversed()
+                .comparing(Restaurant::getDistance, Collections.reverseOrder())
                 .thenComparing(Restaurant::getRating)
-                .thenComparing(Restaurant::getPrice).reversed());
-        //Add the first six to the queue
+                .thenComparing(Restaurant::getPrice, Collections.reverseOrder()));
+        //Add the first six to the queue,
         for(int n = 0; n < 6 && n < restaurants.size(); n++){
             results.add(restaurants.get(n));
         }
@@ -79,12 +80,19 @@ public class RestaurantSearchService {
         while(n < restaurants.size()){
             results.poll();
             results.add(restaurants.get(n));
+            n++;
         }
 
         if(results.size() == 6){
             results.poll();
         }
-       return new ArrayList<>(results);
+
+        var resp = new ArrayList<>(results);
+        resp.sort(Comparator
+                .comparing(Restaurant::getDistance)
+                .thenComparing(Restaurant::getRating, Collections.reverseOrder())
+                .thenComparing(Restaurant::getPrice));
+       return resp;
     }
 
 
