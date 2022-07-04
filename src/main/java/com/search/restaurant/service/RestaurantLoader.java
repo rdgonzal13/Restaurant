@@ -25,9 +25,9 @@ public class RestaurantLoader {
         this.cuisines = cuisines;
     }
 
-    public static List<Restaurant> loadRestaurants(List<Cuisine> cuisines) {
+    public static List<Restaurant> loadRestaurants(List<Cuisine> cuisines, String fileName) {
         List<Restaurant> records = new ArrayList<>();
-        try (CSVReader csvReader = new CSVReader(new FileReader(new File(getResourceURL("restaurants.csv"))))) {
+        try (CSVReader csvReader = new CSVReader(new FileReader(new File(getResourceURL(fileName))))) {
             List<String[]> allValues = csvReader.readAll();
             allValues.remove(0);
             for (String[] values : allValues) {
@@ -52,9 +52,9 @@ public class RestaurantLoader {
         return records;
     }
 
-    public static List<Cuisine> loadCuisines() {
+    public static List<Cuisine> loadCuisines(String fileName) {
         List<Cuisine> cuisines = new ArrayList<>();
-        try (CSVReader csvReader = new CSVReader(new FileReader(new File(getResourceURL("cuisines.csv"))))) {
+        try (CSVReader csvReader = new CSVReader(new FileReader(new File(getResourceURL(fileName))))) {
             List<String[]> allValues = csvReader.readAll();
             allValues.remove(0);
             for (String[] values : allValues) {

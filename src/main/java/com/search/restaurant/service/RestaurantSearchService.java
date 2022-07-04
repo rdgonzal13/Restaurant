@@ -87,12 +87,12 @@ public class RestaurantSearchService {
             results.poll();
         }
 
-        var resp = new ArrayList<>(results);
-        resp.sort(Comparator
+        var bestMatches = new ArrayList<>(results);
+        bestMatches.sort(Comparator
                 .comparing(Restaurant::getDistance)
                 .thenComparing(Restaurant::getRating, Collections.reverseOrder())
                 .thenComparing(Restaurant::getPrice));
-       return resp;
+       return bestMatches;
     }
 
 

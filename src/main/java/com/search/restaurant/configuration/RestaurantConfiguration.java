@@ -16,8 +16,8 @@ public class RestaurantConfiguration {
 
     @Bean
     public RestaurantLoader restaurantLoader(){
-        List<Cuisine> cuisineList = RestaurantLoader.loadCuisines();
-        List<Restaurant> restaurants = RestaurantLoader.loadRestaurants(cuisineList);
+        List<Cuisine> cuisineList = RestaurantLoader.loadCuisines("cuisines.csv");
+        List<Restaurant> restaurants = RestaurantLoader.loadRestaurants(cuisineList, "restaurants.csv");
         return new RestaurantLoader(restaurants, cuisineList);
     }
 

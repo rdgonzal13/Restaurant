@@ -1,6 +1,5 @@
 package com.search.restaurant;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.search.restaurant.model.Cuisine;
 import com.search.restaurant.model.Restaurant;
 import com.search.restaurant.service.RestaurantLoader;
@@ -12,12 +11,9 @@ import org.junit.jupiter.api.TestInstance;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class RestaurantSearchServiceTest {
-
-    private List<Restaurant> restaurants;
 
     private List<Cuisine> cuisines;
 
@@ -28,12 +24,7 @@ public class RestaurantSearchServiceTest {
 
     @BeforeAll
     public void setup() {
-        this.cuisines = createTestCuisineData();
-        this.restaurants = createTestRestaurantData(this.cuisines);
-
-        this.loader = new RestaurantLoader(restaurants, cuisines);
-        this.searchService = new RestaurantSearchService(loader);
-
+        cuisines = RestaurantLoader.loadCuisines("cuisines.csv");
     }
 
     @Test
@@ -42,47 +33,43 @@ public class RestaurantSearchServiceTest {
         Assertions.assertTrue(test.isEmpty());
     }
 
-    @Test
-    public void testSearchWithNameOnly() {
-
-        //Name not found
-        List<Restaurant> test = searchService.findRestaurants("Not found", null, null, null, null);
-        Assertions.assertTrue(test.isEmpty());
-
-        //Test with 2 matching
-        test = searchService.findRestaurants("Taste", null, null, null, null);
-        Assertions.assertEquals(2, test.size());
-        Assertions.assertTrue(test.get(0).getDistance() <= test.get(1).getDistance());
-
-
-
-        //Test with 1 matching
-        test = searchService.findRestaurants(restaurants.get(2).getName(), null, null, null, null);
-        Assertions.assertEquals(1, test.size());
-
-    }
+//    @Test
+//    public void testSearchWithNameOnly() {
+//        //Name not found
+//        List<Restaurant> test = searchService.findRestaurants("Not found", null, null, null, null);
+//        Assertions.assertTrue(test.isEmpty());
+//
+//        //Test with 2 matching
+//        test = searchService.findRestaurants("Taste", null, null, null, null);
+//        Assertions.assertEquals(2, test.size());
+//        Assertions.assertTrue(test.get(0).getDistance() <= test.get(1).getDistance());
+//
+//        //Test with 1 matching
+//        test = searchService.findRestaurants(restaurants.get(2).getName(), null, null, null, null);
+//        Assertions.assertEquals(1, test.size());
+//    }
 
     @Test
     public void testSearchWithDistanceOnly() {
+        this.loader = new RestaurantLoader(RestaurantLoader.loadRestaurants(cuisines, "distance_restaurants.csv"), cuisines);
+        this.searchService = new RestaurantSearchService(loader);
 
         //Test no matches found
         List<Restaurant> test = searchService.findRestaurants(null, 1, null, null, null);
-        Assertions.assertTrue(test.isEmpty());
+        Assertions.assertEquals(1, test.size());
 
         //Test one matches found (only one distance less than value)
-        test = searchService.findRestaurants(null, 5, null, null, null);
-        Assertions.assertEquals(1, test.size());
-        ;
+        test = searchService.findRestaurants(null, 2, null, null, null);
+        Assertions.assertEquals(2, test.size());
+        Assertions.assertTrue(test.get(0).getDistance() <= test.get(1).getDistance());
 
         //Test two matches found (two distances less than value)
-        test = searchService.findRestaurants(null, 8, null, null, null);
-        Assertions.assertEquals(2, test.size());
-
-        //Test three matches found (3 distances less than value)
-        test = searchService.findRestaurants(null, 10, null, null, null);
+        test = searchService.findRestaurants(null, 3, null, null, null);
         Assertions.assertEquals(3, test.size());
 
-
+        //Best results should have distance first.
+        Assertions.assertTrue(test.get(0).getDistance() <= test.get(1).getDistance());
+        Assertions.assertTrue(test.get(0).getDistance() <= test.get(1).getDistance());
 
     }
 
@@ -99,18 +86,22 @@ public class RestaurantSearchServiceTest {
 
     @Test
     public void testSearchRatingOnly() {
+        this.loader = new RestaurantLoader(RestaurantLoader.loadRestaurants(cuisines, "rating_restaurants.csv"), cuisines);
+        this.searchService = new RestaurantSearchService(loader);
 
-        //Test one matches found (only one price less than value)
-        List<Restaurant> test = searchService.findRestaurants(null, null, 5, null, null);
-        Assertions.assertEquals(1, test.size());
+        //Test return all 5 best matches
+        List<Restaurant> test = searchService.findRestaurants(null, null, 1, null, null);
+        Assertions.assertEquals(5, test.size());
+        Assertions.assertTrue(test.get(0).getRating() >= test.get(1).getRating());
+        Assertions.assertTrue(test.get(1).getRating() >= test.get(2).getRating());
+        Assertions.assertTrue(test.get(2).getRating() >= test.get(3).getRating());
+        Assertions.assertTrue(test.get(3).getRating() >= test.get(4).getRating());
 
-        //Test two matches found (two prices less than value)
+        //Test return only 3 best matches
         test = searchService.findRestaurants(null, null, 4, null, null);
-        Assertions.assertEquals(2, test.size());
-
-        //Test three matches found (3 prices less than value)
-        test = searchService.findRestaurants(null, null, 3, null, null);
         Assertions.assertEquals(3, test.size());
+        Assertions.assertTrue(test.get(0).getRating() >= test.get(1).getRating());
+        Assertions.assertTrue(test.get(1).getRating() >= test.get(2).getRating());
 
     }
 
