@@ -6,11 +6,13 @@ Java 11
 
 ### Feature
 REST endpoint top 5 restaurants matching criteria:
-    * Distance
-    * Name
-    * Rating
-    * Price
-    * Cuisine
+```
+    - Distance
+    - Name
+    - Rating
+    - Price
+    - Cuisine
+```
 
 ### Test
  1. Navigate to project directory
@@ -26,13 +28,14 @@ REST endpoint top 5 restaurants matching criteria:
 ### How to Search:
    1. Run endpoint http://localhost:8080/restaurants - will return empty list with no query params
    2. Add criteria as query params ex. http://localhost:8080/restaurants?distance=26 or http://localhost:8080/restaurants?distance=26&name=Mcd' for multiple params
-   
+   ```
    Possible Query Params:
-    * name
-    * customer_rating
-    * distance
-    * price
-    * cuisine
+    - name
+    - customer_rating
+    - distance
+    - price
+    - cuisine
+   ```
     
 If multiple matches are possible then the top five sorted by distance, dating, and then price will be returned.
  
