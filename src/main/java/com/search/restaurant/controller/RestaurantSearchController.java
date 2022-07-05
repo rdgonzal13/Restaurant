@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @RestController
 public class RestaurantSearchController {
@@ -22,25 +21,22 @@ public class RestaurantSearchController {
     }
 
 
-    @Operation(summary = "Find top 5 local restaurants based on name, price , distance, rating and price")
+    @Operation(summary = "Find top 5 local restaurants based on name, price , distance, rating, price and cuisine")
     @GetMapping("/restaurants")
     public ResponseEntity<List<Restaurant>> searchLocalRestaurants(@RequestParam(value = "name", required = false) String name,
-                                                                   @RequestParam(value = "distance" , required = false) Integer distance,
-                                                                   @RequestParam(value = "customer_rating" , required = false) Integer rating,
-                                                                   @RequestParam(value = "cuisine" , required = false) String cuisine,
-                                                                   @RequestParam(value = "price", required = false) Integer price){
+                                                                   @RequestParam(value = "distance", required = false) Integer distance,
+                                                                   @RequestParam(value = "customer_rating", required = false) Integer rating,
+                                                                   @RequestParam(value = "cuisine", required = false) String cuisine,
+                                                                   @RequestParam(value = "price", required = false) Integer price) {
 
         try {
             List<Restaurant> restaurants = searchService.findRestaurants(name, distance, rating, price, cuisine);
             return ResponseEntity.of(Optional.of(restaurants));
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
 
     }
-
-
-
 
 
 }
